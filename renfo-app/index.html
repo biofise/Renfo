@@ -112,8 +112,12 @@
         .hi{min-height:32px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;text-align:center}
         .btn.sm{min-height:32px;padding:2px 10px;font-size:.85rem}
         .sug{color:var(--ok);font-weight:600}
-        #toast,#upd{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:1100;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--card);padding:10px 14px;border-radius:12px}
+        #toast,#upd{position:fixed;left:12px;right:12px;bottom:calc(124px + env(safe-area-inset-bottom,0px));z-index:1100;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--card);padding:10px 14px;border-radius:12px}
         #toast[hidden],#upd[hidden]{display:none}
+        .grow{display:flex;gap:6px}
+        .grow .btn:last-child{flex:1}
+        #gReps{width:72px;min-width:0;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;text-align:center}
+        #gMic.on{background:var(--ko);color:#fff;border-color:var(--ko)}
     </style>
 </head>
 <body>
@@ -149,7 +153,7 @@
 <!-- FICHE 1 -->
 <section class="fiche">
 <h2>① Squat · Pompes · Extension lombaire</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Squat <small>cuisses · fessiers</small></h3>
 <div class="poses">
@@ -176,7 +180,7 @@
 <!-- FICHE 2 -->
 <section class="fiche">
 <h2>② Hamstring bridge · Tirage horizontal · Mountain climbers</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Hamstring bridge <small>ischio-jambiers · fessiers</small></h3>
 <div class="poses">
@@ -203,7 +207,7 @@
 <!-- FICHE 3 -->
 <section class="fiche">
 <h2>③ Presse épaules · Biceps curl · Fentes</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Presse épaules <small>épaules · triceps</small></h3>
 <div class="poses">
@@ -230,7 +234,7 @@
     <dialog id="endDlg" aria-labelledby="endT"><h2 id="endT">Terminer la séance</h2><label for="rpe">Difficulté ressentie (1 = facile, 10 = très dur)</label><div class="sel"><select id="rpe"><option value="">Non précisée</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><label for="note">Note (douleur, fatigue, remarque)</label><textarea id="note" rows="3" maxlength="500"></textarea><div class="opts"><button class="btn" id="endSave">Enregistrer</button><button class="btn ghost" id="endCancel">Annuler</button></div></dialog>
     </main>
     <div id="toast" role="status" hidden></div><div id="upd" hidden><span>Mise à jour disponible</span><button class="btn" id="updBtn">Recharger</button></div>
-    <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><button class="btn" id="gset">Série faite ✓</button></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
+    <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><div class="grow"><input id="gReps" inputmode="numeric" placeholder="Reps" aria-label="Nombre de répétitions de la série"><button class="btn ghost" id="gMic" aria-label="Dicter le nombre de répétitions">🎤</button><button class="btn" id="gset">Série faite ✓</button></div></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
 
     <script>
 (function () {
@@ -423,7 +427,7 @@
     cur = Math.max(0, Math.min(exs.length - 1, i));
     document.querySelectorAll('.cur').forEach(x => x.classList.remove('cur'));
     exs[cur].classList.add('cur'); exs[cur].closest('.fiche').classList.add('cur');
-    $('gpos').textContent = 'Exercice ' + (cur + 1) + ' / ' + exs.length;
+    gstate(); $('gReps').value = ''; $('gReps').placeholder = reg[cur].type === 'time' ? 'Secondes' : 'Reps';
     window.scrollTo(0, 0);
   }
   $('guideBtn').onclick = () => {
@@ -434,8 +438,13 @@
   $('gprev').onclick = () => show(cur - 1);
   $('gnext').onclick = () => show(cur + 1);
   $('gset').onclick = () => {
-    const b = exs[cur].querySelector('.set:not(.done) .ck');
-    if (b) b.click();
+    const row = exs[cur].querySelector('.set:not(.done)');
+    if (row) {
+      const val = $('gReps').value.trim();
+      if (val) { const c = row.querySelectorAll('select,input'), rp = c[c.length - 1]; rp.value = val; rp.dispatchEvent(new Event('input')); }
+      row.querySelector('.ck').click();
+    }
+    $('gReps').value = '';
     if (!exs[cur].querySelector('.set:not(.done)') && cur < exs.length - 1) show(cur + 1);
   };
 
@@ -486,7 +495,7 @@
   };
 
   // Version et état de la connexion
-  const APP_VERSION = '1.2.0';
+  const APP_VERSION = '1.3.0';
   const net = () => {
     const on = navigator.onLine;
     $('netdot').classList.toggle('off', !on);
@@ -567,6 +576,41 @@
   $('zoomM').onclick = () => { zi = Math.max(0, zi - 1); store.set('zoomI', zi); look(); };
   $('zoomP').onclick = () => { zi = Math.min(ZOOMS.length - 1, zi + 1); store.set('zoomI', zi); look(); };
   look();
+
+  // Mode guidé : saisie des répétitions au clavier ou à la voix
+  const gstate = () => {
+    const ex = exs[cur], all = ex.querySelectorAll('.set').length, left = ex.querySelectorAll('.set:not(.done)').length;
+    $('gpos').textContent = 'Exercice ' + (cur + 1) + ' / ' + exs.length + ' · ' + (left ? 'série ' + (all - left + 1) + ' / ' + all : 'terminé ✓');
+  };
+  document.addEventListener('click', () => setTimeout(gstate, 0));
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const NUMS = { zéro: 0, un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, neuf: 9, dix: 10, onze: 11, douze: 12, treize: 13, quatorze: 14, quinze: 15, seize: 16, vingt: 20, trente: 30, quarante: 40, cinquante: 50, soixante: 60 };
+  function parseReps(t) {
+    t = t.toLowerCase().replace(/-/g, ' ');
+    const d = t.match(/\d+/);
+    if (d) return +d[0];
+    const w = t.split(/\s+/).filter(x => x in NUMS);
+    return w.length ? w.reduce((a, x) => a + NUMS[x], 0) : null;
+  }
+  let rec = null;
+  const micOff = () => { rec = null; $('gMic').classList.remove('on'); };
+  $('gMic').onclick = () => {
+    if (!SR) { toast("La dictée vocale n'est pas disponible sur ce navigateur : saisis le nombre au clavier."); return; }
+    if (rec) { rec.stop(); return; }
+    rec = new SR(); rec.lang = 'fr-FR'; rec.interimResults = false; rec.maxAlternatives = 3;
+    $('gMic').classList.add('on');
+    rec.onresult = ev => {
+      const r = ev.results[0];
+      for (let i = 0; i < r.length; i++) {
+        const v = parseReps(r[i].transcript);
+        if (v !== null) { $('gReps').value = v; toast('Entendu : ' + v + ' — appuie sur « Série faite » pour valider'); return; }
+      }
+      toast("Nombre non compris, réessaie ou saisis-le au clavier.");
+    };
+    rec.onerror = () => toast('Dictée impossible (micro refusé ou pas de connexion).');
+    rec.onend = micOff;
+    try { rec.start(); } catch (e) { micOff(); }
+  };
 
   marks(); count(); setMode(true, false);
 })();
