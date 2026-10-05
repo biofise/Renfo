@@ -1,0 +1,26 @@
+name: Release
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - id: v
+        run: echo "v=$(node scripts/check.js --print-version)" >> "$GITHUB_OUTPUT"
+      - name: Créer la release vX.Y.Z si elle n'existe pas
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v${{ steps.v.outputs.v }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "$TAG existe déjà"
+          else
+            gh release create "$TAG" --target "${{ github.sha }}" --generate-notes --title "Version ${{ steps.v.outputs.v }}"
+          fi
