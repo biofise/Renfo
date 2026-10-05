@@ -118,6 +118,12 @@
         .grow .btn:last-child{flex:1}
         #gReps{width:72px;min-width:0;min-height:44px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;text-align:center}
         #gMic.on{background:var(--ko);color:#fff;border-color:var(--ko)}
+        .calh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;text-transform:capitalize}
+        .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+        .cal i{font-style:normal;color:var(--mute);font-size:.75rem}
+        .cal span{padding:6px 0;border-radius:8px;font-size:.85rem}
+        .cal span.on{background:var(--ok);color:var(--card);font-weight:700}
+        .cal span.today{outline:2px solid var(--acc)}
     </style>
 </head>
 <body>
@@ -149,11 +155,11 @@
 
 <h1>Fiches d'exercices</h1>
 <p class="sub">Renforcement musculaire · 3 blocs de 3 exercices · valide chaque série avec ✓ : le repos démarre tout seul.</p>
-<p id="appinfo" class="info" aria-live="polite"></p><div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="weekBtn"></button></div><details class="more"><summary>Réglages</summary><div class="opts"><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button><button class="btn ghost" id="optVoice"></button><button class="btn ghost" id="themeBtn"></button><button class="btn ghost" id="zoomM" aria-label="Texte plus petit">A−</button><button class="btn ghost" id="zoomP" aria-label="Texte plus grand">A+</button></div></details>
+<p id="appinfo" class="info" aria-live="polite"></p><div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="bkBtn">💾 Sauvegarde</button><button class="btn ghost" id="weekBtn"></button></div><details class="more"><summary>Réglages</summary><div class="opts"><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button><button class="btn ghost" id="optVoice"></button><button class="btn ghost" id="optHands"></button><button class="btn ghost" id="themeBtn"></button><button class="btn ghost" id="zoomM" aria-label="Texte plus petit">A−</button><button class="btn ghost" id="zoomP" aria-label="Texte plus grand">A+</button></div></details>
 <!-- FICHE 1 -->
 <section class="fiche">
 <h2>① Squat · Pompes · Extension lombaire</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
 
 <div class="ex"><h3>Squat <small>cuisses · fessiers</small></h3>
 <div class="poses">
@@ -180,7 +186,7 @@
 <!-- FICHE 2 -->
 <section class="fiche">
 <h2>② Hamstring bridge · Tirage horizontal · Mountain climbers</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
 
 <div class="ex"><h3>Hamstring bridge <small>ischio-jambiers · fessiers</small></h3>
 <div class="poses">
@@ -207,7 +213,7 @@
 <!-- FICHE 3 -->
 <section class="fiche">
 <h2>③ Presse épaules · Biceps curl · Fentes</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
 
 <div class="ex"><h3>Presse épaules <small>épaules · triceps</small></h3>
 <div class="poses">
@@ -230,8 +236,9 @@
 <ul><li>Fais un grand pas en avant, buste droit.</li><li>Descends jusqu'à avoir les deux genoux à ~90°, genou arrière près du sol.</li><li>Pousse dans le pied avant pour revenir, puis change de jambe.</li></ul>
 <p class="tip">Genou avant au-dessus de la cheville, pas au-delà.</p><a class="vid" href="https://www.youtube.com/results?search_query=fentes%20avant%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
 </section>
-    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><div class="chw"><h3>Progression</h3><div class="sel"><select id="chEx" aria-label="Exercice"></select><select id="chMet" aria-label="Mesure"><option value="total">Total reps / secondes</option><option value="best">Meilleure série</option><option value="kg">Charge max (kg)</option></select></div><div id="chSvg" class="info"></div></div><h3>Détail des séances</h3><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
+    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><h3>Calendrier</h3><div id="calBox"></div><div class="chw"><h3>Progression</h3><div class="sel"><select id="chEx" aria-label="Exercice"></select><select id="chMet" aria-label="Mesure"><option value="total">Total reps / secondes</option><option value="best">Meilleure série</option><option value="kg">Charge max (kg)</option></select></div><div id="chSvg" class="info"></div></div><h3>Détail des séances</h3><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
     <dialog id="endDlg" aria-labelledby="endT"><h2 id="endT">Terminer la séance</h2><label for="rpe">Difficulté ressentie (1 = facile, 10 = très dur)</label><div class="sel"><select id="rpe"><option value="">Non précisée</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><label for="note">Note (douleur, fatigue, remarque)</label><textarea id="note" rows="3" maxlength="500"></textarea><div class="opts"><button class="btn" id="endSave">Enregistrer</button><button class="btn ghost" id="endCancel">Annuler</button></div></dialog>
+    <dialog id="bkDlg" aria-labelledby="bkT"><h2 id="bkT">Sauvegarde</h2><p id="bkInfo" class="info"></p><div class="opts"><button class="btn" id="bkFile">Télécharger un fichier</button><button class="btn ghost" id="bkCopy">Copier le texte</button></div><h3>Restaurer</h3><input type="file" id="bkLoad" accept=".json,application/json" aria-label="Choisir un fichier de sauvegarde"><label for="bkText">… ou colle ici le texte de la sauvegarde :</label><textarea id="bkText" rows="3"></textarea><div class="opts"><button class="btn ghost" id="bkPaste">Restaurer depuis le texte</button><button class="btn ghost" id="bkClose">Fermer</button></div></dialog>
     </main>
     <div id="toast" role="status" hidden></div><div id="upd" hidden><span>Mise à jour disponible</span><button class="btn" id="updBtn">Recharger</button></div>
     <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><div class="grow"><input id="gReps" inputmode="numeric" placeholder="Reps" aria-label="Nombre de répétitions de la série"><button class="btn ghost" id="gMic" aria-label="Dicter le nombre de répétitions">🎤</button><button class="btn" id="gset">Série faite ✓</button></div></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
@@ -243,7 +250,7 @@
     get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
-  const opt = Object.assign({ voice: false }, store.get('opt', { sound: true, vib: true }));
+  const opt = Object.assign({ voice: false, hands: false }, store.get('opt', { sound: true, vib: true }));
   const say = t => { if (!opt.voice || !window.speechSynthesis) return; try { const u = new SpeechSynthesisUtterance(t); u.lang = 'fr-FR'; speechSynthesis.speak(u); } catch (e) {} };
   let rest = store.get('rest', 180), work = true, running = false, target = 0, lastS = -1;
   let acc = 0, t0 = 0, tick = null, wake = null, ctx = null, n = 0, cur = 0;
@@ -308,7 +315,7 @@
     render();
     if (auto) start(); else unlock();
   }
-  function endRest() { say('Série suivante'); beep(3); vib([200, 100, 200, 100, 400]); setMode(true, false); $('status').textContent = 'Go !'; }
+  function endRest() { say('Série suivante'); beep(3); vib([200, 100, 200, 100, 400]); setMode(true, false); $('status').textContent = 'Go !'; handsStart(); }
   function endEffort() { beep(2); vib([300, 100, 300]); setMode(true, false); $('status').textContent = 'Fini !'; }
 
   $('startPauseBtn').onclick = () => (running ? pause() : start());
@@ -325,7 +332,7 @@
   });
 
   // Son et vibration : réglages
-  [['optSound', 'sound', '🔊 Son'], ['optVib', 'vib', '📳 Vibration'], ['optVoice', 'voice', '🗣️ Voix']].forEach(([id, k, label]) => {
+  [['optSound', 'sound', '🔊 Son'], ['optVib', 'vib', '📳 Vibration'], ['optVoice', 'voice', '🗣️ Voix'], ['optHands', 'hands', '🙌 Mains libres']].forEach(([id, k, label]) => {
     const b = $(id);
     const up = () => { b.setAttribute('aria-pressed', opt[k]); b.textContent = label + ' : ' + (opt[k] ? 'oui' : 'non'); };
     up();
@@ -451,7 +458,7 @@
   // Historique des séances
   const types = {}; reg.forEach(r => { types[r.nm] = r.type; });
   const el = (tag, txt) => { const x = document.createElement(tag); x.textContent = txt; return x; };
-  const persist = () => { store.set('sessions', sessions.slice(-30)); reg.forEach(r => { r.hs.innerHTML = hist(r.nm, r.type); }); weekInfo(); };
+  const persist = () => { store.set('sessions', sessions.slice(-30)); reg.forEach(r => { r.hs.innerHTML = hist(r.nm, r.type); }); weekInfo(); renderCal(); };
   const inp = (v, ph, w, fn) => {
     const i = document.createElement('input');
     i.value = v || ''; i.placeholder = ph; i.className = 'hi'; i.style.width = w; i.setAttribute('aria-label', ph);
@@ -486,7 +493,7 @@
       });
     });
   }
-  $('histBtn').onclick = () => { renderHist(); drawChart(); $('histDlg').showModal(); };
+  $('histBtn').onclick = () => { renderHist(); renderCal(); drawChart(); $('histDlg').showModal(); };
   $('histClose').onclick = () => $('histDlg').close();
   $('histDlg').addEventListener('close', persist);
   $('histReset').onclick = () => {
@@ -495,7 +502,7 @@
   };
 
   // Version et état de la connexion
-  const APP_VERSION = '1.3.0';
+  const APP_VERSION = '1.4.0';
   const net = () => {
     const on = navigator.onLine;
     $('netdot').classList.toggle('off', !on);
@@ -555,7 +562,7 @@
   const weekInfo = () => {
     const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
     const mon = d.toLocaleDateString('sv-SE'), c = sessions.filter(s => s.d >= mon).length;
-    $('weekBtn').textContent = '📅 Semaine : ' + c + ' / ' + goal + (c >= goal ? ' ✅' : '');
+    $('weekBtn').textContent = '📅 Semaine : ' + c + ' / ' + goal + (c >= goal ? ' ✅' : '') + (streak() ? ' 🔥' + streak() : '');
   };
   $('weekBtn').onclick = () => {
     const v = parseInt(prompt('Objectif : combien de séances par semaine ? (1 à 7)', goal), 10);
@@ -592,25 +599,103 @@
     const w = t.split(/\s+/).filter(x => x in NUMS);
     return w.length ? w.reduce((a, x) => a + NUMS[x], 0) : null;
   }
-  let rec = null;
+  let rec = null, want = false, tries = 0;
   const micOff = () => { rec = null; $('gMic').classList.remove('on'); };
-  $('gMic').onclick = () => {
-    if (!SR) { toast("La dictée vocale n'est pas disponible sur ce navigateur : saisis le nombre au clavier."); return; }
-    if (rec) { rec.stop(); return; }
+  function listen() {
+    if (!SR || rec) return;
     rec = new SR(); rec.lang = 'fr-FR'; rec.interimResults = false; rec.maxAlternatives = 3;
     $('gMic').classList.add('on');
     rec.onresult = ev => {
       const r = ev.results[0];
       for (let i = 0; i < r.length; i++) {
         const v = parseReps(r[i].transcript);
-        if (v !== null) { $('gReps').value = v; toast('Entendu : ' + v + ' — appuie sur « Série faite » pour valider'); return; }
+        if (v !== null && v <= 300) {
+          want = false; $('gReps').value = v;
+          if (opt.hands) { toast('Entendu : ' + v); $('gset').click(); }
+          else toast('Entendu : ' + v + ' — appuie sur « Série faite » pour valider');
+          return;
+        }
       }
-      toast("Nombre non compris, réessaie ou saisis-le au clavier.");
+      if (!opt.hands) toast('Nombre non compris, réessaie ou saisis-le au clavier.');
     };
-    rec.onerror = () => toast('Dictée impossible (micro refusé ou pas de connexion).');
-    rec.onend = micOff;
+    rec.onerror = ev => {
+      if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') { want = false; toast('Micro refusé : autorise-le dans les réglages du navigateur.'); }
+    };
+    rec.onend = () => { micOff(); if (want && opt.hands && tries++ < 8) setTimeout(listen, 300); else want = false; };
     try { rec.start(); } catch (e) { micOff(); }
+  }
+  // Mains libres : après le repos, l'écoute démarre toute seule ; le nombre entendu valide la série
+  function handsStart() { if (opt.hands && SR && document.body.classList.contains('guided')) { want = true; tries = 0; listen(); } }
+  $('gMic').onclick = () => {
+    if (!SR) { toast("La dictée vocale n'est pas disponible sur ce navigateur : saisis le nombre au clavier."); return; }
+    if (rec) { want = false; rec.stop(); return; }
+    want = true; tries = 0; listen();
   };
+
+  // Calendrier et série de semaines
+  function dstr(d) { return d.toLocaleDateString('sv-SE'); }
+  function mondayOf(d) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+  function streak() {
+    const cnt = {};
+    sessions.forEach(s => { const m = dstr(mondayOf(new Date(s.d + 'T12:00:00'))); cnt[m] = (cnt[m] || 0) + 1; });
+    let w = mondayOf(new Date()), n = 0;
+    if ((cnt[dstr(w)] || 0) < goal) w.setDate(w.getDate() - 7);
+    while ((cnt[dstr(w)] || 0) >= goal) { n++; w.setDate(w.getDate() - 7); }
+    return n;
+  }
+  let cm = new Date(); cm.setDate(1);
+  function renderCal() {
+    const y = cm.getFullYear(), m = cm.getMonth(), first = (new Date(y, m, 1).getDay() + 6) % 7, dim = new Date(y, m + 1, 0).getDate();
+    const by = {}, today = dstr(new Date());
+    sessions.forEach(s => { by[s.d] = (by[s.d] || 0) + 1; });
+    let h = '<div class="calh"><button class="btn ghost sm" id="calP" aria-label="Mois précédent">◀</button><b>' +
+      cm.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }) +
+      '</b><button class="btn ghost sm" id="calN" aria-label="Mois suivant">▶</button></div><div class="cal">';
+    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(x => { h += '<i>' + x + '</i>'; });
+    for (let i = 0; i < first; i++) h += '<span></span>';
+    for (let d = 1; d <= dim; d++) {
+      const k = y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      h += '<span class="' + (by[k] ? 'on ' : '') + (k === today ? 'today' : '') + '">' + d + '</span>';
+    }
+    const n = streak();
+    $('calBox').innerHTML = h + '</div><p class="info">' + (n
+      ? '🔥 ' + n + ' semaine' + (n > 1 ? 's' : '') + " d'affilée avec " + goal + ' séance' + (goal > 1 ? 's' : '') + ' ou plus'
+      : 'Fais ' + goal + ' séance' + (goal > 1 ? 's' : '') + ' cette semaine pour lancer une série.') + '</p>';
+    $('calP').onclick = () => { cm.setMonth(cm.getMonth() - 1); renderCal(); };
+    $('calN').onclick = () => { cm.setMonth(cm.getMonth() + 1); renderCal(); };
+  }
+
+  // Sauvegarde et restauration
+  const bkData = () => JSON.stringify({ app: 'renfo', version: APP_VERSION, date: new Date().toISOString(), sessions: sessions.slice(-30), goal, rest });
+  const bkInfo = () => { const d = store.get('lastBackup', null); $('bkInfo').textContent = d ? 'Dernière sauvegarde : ' + d : 'Aucune sauvegarde faite pour l’instant.'; };
+  const bkDone = () => { store.set('lastBackup', dstr(new Date())); bkInfo(); };
+  $('bkBtn').onclick = () => { bkInfo(); $('bkDlg').showModal(); };
+  $('bkClose').onclick = () => $('bkDlg').close();
+  $('bkFile').onclick = () => {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([bkData()], { type: 'application/json' }));
+    a.download = 'renfo-sauvegarde-' + dstr(new Date()) + '.json';
+    document.body.appendChild(a); a.click(); a.remove(); bkDone();
+  };
+  $('bkCopy').onclick = async () => {
+    try { await navigator.clipboard.writeText(bkData()); bkDone(); toast('Sauvegarde copiée dans le presse-papiers'); }
+    catch (e) { $('bkText').value = bkData(); $('bkText').select(); toast('Copie impossible : copie le texte affiché'); }
+  };
+  function restore(txt) {
+    let d; try { d = JSON.parse(txt); } catch (e) { toast('Fichier illisible'); return; }
+    if (!d || d.app !== 'renfo' || !Array.isArray(d.sessions)) { toast("Ce n'est pas une sauvegarde valide"); return; }
+    const ok = d.sessions.filter(s => s && /^\d{4}-\d{2}-\d{2}$/.test(s.d) && s.e && typeof s.e === 'object' && Object.values(s.e).every(Array.isArray));
+    if (!confirm('Restaurer ' + ok.length + ' séance(s) ? Elles seront ajoutées à celles de cet appareil, sans doublons.')) return;
+    const seen = new Set(sessions.map(s => JSON.stringify(s)));
+    ok.forEach(s => { const k = JSON.stringify(s); if (!seen.has(k)) { seen.add(k); sessions.push(s); } });
+    sessions.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+    store.set('sessions', sessions.slice(-30));
+    if (d.goal >= 1 && d.goal <= 7) store.set('goal', d.goal);
+    if ([90, 120, 180].includes(d.rest)) store.set('rest', d.rest);
+    location.reload();
+  }
+  $('bkLoad').onchange = async e => { const f = e.target.files[0]; if (f) restore(await f.text()); e.target.value = ''; };
+  $('bkPaste').onclick = () => restore($('bkText').value);
 
   marks(); count(); setMode(true, false);
 })();
