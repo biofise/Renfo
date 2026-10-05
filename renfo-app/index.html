@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#e0552b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Séance">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Ma Séance</title>
+    <style>
+	:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a33;--mute:#5d6b75;--line:#d9dde0;--acc:#e0552b;--chip:#e9efe9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+	@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191d;--card:#1d2429;--ink:#e8edf0;--mute:#9aa8b1;--line:#34404a;--acc:#ff7a4d;--chip:#26332b}}
+	:root[data-theme="dark"]{--bg:#14191d;--card:#1d2429;--ink:#e8edf0;--mute:#9aa8b1;--line:#34404a;--acc:#ff7a4d;--chip:#26332b}
+	*{box-sizing:border-box}
+	body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.45}
+	main{max-width:760px;margin:0 auto;padding:150px 14px 40px}
+	h1{font-size:1.5rem;margin:0 0 4px}
+	.sub{color:var(--mute);margin:0 0 20px}
+	.fiche{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:22px}
+	.fiche>h2{margin:0 0 8px;font-size:1.2rem}
+	.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+	.chips span{background:var(--chip);border-radius:99px;padding:3px 10px;font-size:.85rem}
+	.ex{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+	.ex h3{margin:0 0 8px;font-size:1.05rem}
+	.ex h3 small{color:var(--mute);font-weight:400}
+	.poses{display:flex;gap:10px;margin-bottom:8px}
+	.poses figure{flex:1;margin:0;text-align:center;min-width:0}
+	.poses svg{width:100%;height:auto;max-height:150px;background:var(--bg);border-radius:10px}
+	figcaption{font-size:.78rem;color:var(--mute)}
+	.b{fill:none;stroke:var(--ink);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+	.h{fill:var(--ink)}
+	.fl{stroke:var(--line);stroke-width:2;stroke-linecap:round}
+	.ac{fill:none;stroke:var(--acc);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:5 4}
+	.ex ul{margin:4px 0;padding-left:18px}
+	.tip{color:var(--acc);font-size:.9rem;margin:4px 0 0}
+	.vid{display:inline-block;margin-top:8px;padding:6px 12px;border:1px solid var(--acc);border-radius:99px;color:var(--acc);text-decoration:none;font-size:.9rem}
+	@media print{.vid{display:none}}
+	@media print{.fiche{break-after:page;border:0}body{background:#fff}}
+        /* ─── HEADER ET TIMER FIXE ─── */
+        :root{--ok:#15803d;--ko:#c2410c}
+        @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ok:#4ade80;--ko:#fb923c}}
+        :root[data-theme="dark"]{--ok:#4ade80;--ko:#fb923c}
+        header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--card);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,0,0,.12);padding:calc(8px + env(safe-area-inset-top,0px)) 14px 8px;transition:background .3s}
+        header.rest{background:color-mix(in srgb,var(--ko) 14%,var(--card))}
+        .tbar,.tbar2{display:flex;align-items:center;justify-content:space-between;gap:8px;max-width:760px;margin:0 auto}
+        .tbar2{margin-top:6px;font-size:.85rem;color:var(--mute)}
+        .status{display:block;font-weight:700;text-transform:uppercase;letter-spacing:1px;font-size:.85rem}
+        .status-work{color:var(--ok)}
+        .status-rest{color:var(--ko)}
+        .tdisp{font-size:2.1rem;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+        .tbtns{display:flex;gap:6px}
+        .btn{background:var(--acc);color:#fff;border:0;border-radius:8px;padding:10px 14px;min-height:44px;font-size:.95rem;font-weight:700;cursor:pointer}
+        .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+        #presets{display:flex;gap:6px;align-items:center}
+        #presets button{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:99px;padding:5px 12px;min-height:32px;cursor:pointer}
+        #presets button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+        .prog{font-weight:600;color:var(--ink)}
+        /* ─── SUIVI DES SÉRIES ─── */
+        .trk{margin:10px 0 0;display:grid;gap:6px}
+        .set{display:grid;grid-template-columns:auto 1fr 1fr auto;gap:6px;align-items:center}
+        .set b{font-size:.85rem;color:var(--mute);min-width:56px}
+        .set input,.set select{width:100%;min-width:0;min-height:40px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+        .set .ck{min-width:48px;min-height:40px;border:1px solid var(--acc);background:transparent;color:var(--acc);border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer}
+        .set.done .ck{background:var(--ok);border-color:var(--ok);color:var(--card)}
+        .set.done input,.set.done select{opacity:.6}
+        @media print{header,.trk,#resetSession{display:none}main{padding-top:20px}}
+        
+        /* ─── CONTENU PRINCIPAL ─── */
+            .set.t{grid-template-columns:auto 1fr auto auto}
+        .set .go{min-height:40px;padding:0 10px;border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;font:inherit;font-size:.85rem;cursor:pointer}
+        .tgt{color:var(--mute);font-size:.85rem;margin:8px 0 0}
+        .last{color:var(--mute);font-size:.8rem;margin:6px 0 0}.last:empty{display:none}
+        .spark{width:60px;height:18px;vertical-align:middle;fill:none;stroke:var(--acc);stroke-width:2}
+        #bar{position:absolute;left:0;bottom:0;height:5px;width:0;background:var(--acc);transition:width .25s linear}
+        .opts{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+        .btn[aria-pressed="false"]{opacity:.6}
+        #gnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:1000;gap:8px;align-items:center;background:var(--card);border-top:1px solid var(--line);padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px))}
+        #gnav>div{flex:1;display:flex;flex-direction:column;gap:4px;text-align:center;font-size:.8rem;color:var(--mute)}
+        body.guided #gnav{display:flex}
+        body.guided main{padding-bottom:110px}
+        body.guided .fiche:not(.cur),body.guided .ex:not(.cur){display:none}
+        body.guided .poses svg{max-height:200px}
+        @media print{.opts,#gnav{display:none}}
+        dialog{width:min(92vw,600px);max-height:85vh;overflow:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);padding:16px}
+        dialog::backdrop{background:rgba(0,0,0,.5)}
+        dialog h2{margin:0 0 8px;font-size:1.2rem}
+        .hs h4{margin:14px 0 4px;text-transform:capitalize}
+        .hs p{margin:2px 0;font-size:.9rem}
+        dialog .opts{margin:14px 0 0}
+        #histReset{color:var(--ko);border-color:var(--ko)}
+        @media print{dialog{display:none}}
+    </style>
+</head>
+<body>
+
+    <!-- Header Fixe contenant le Timer -->
+    <header>
+        <div class="tbar">
+            <div>
+                <span id="status" class="status status-work">Effort</span>
+                <div id="timer" class="tdisp" role="timer">00:00</div>
+            </div>
+            <div class="tbtns">
+                <button id="startPauseBtn" class="btn">Démarrer</button>
+                <button id="switchBtn" class="btn ghost">Repos</button>
+            </div>
+        </div>
+        <div class="tbar2">
+            <div id="presets"><span>Repos :</span><button data-s="90">1:30</button><button data-s="120">2:00</button><button data-s="180">3:00</button></div>
+            <span id="prog" class="prog">0 / 0 séries</span>
+        </div>
+    <div id="bar"></div></header>
+
+    <!-- Contenu qui défile -->
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+	<g id="f"><path class="fl" d="M4 91H116"/></g>
+	<g id="s"><circle class="h" cx="60" cy="18" r="6"/><path class="b" d="M60 25V88M60 88h8"/></g>
+	</defs></svg>
+    <main>
+
+<h1>Fiches d'exercices</h1>
+<p class="sub">Renforcement musculaire · 3 blocs de 3 exercices · valide chaque série avec ✓ : le repos démarre tout seul.</p>
+<div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button></div>
+<!-- FICHE 1 -->
+<section class="fiche">
+<h2>① Squat · Pompes · Extension lombaire</h2>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+
+<div class="ex"><h3>Squat <small>cuisses · fessiers</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/><path class="b" d="M60 29L80 31"/></svg><figcaption>Départ</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="66" cy="34" r="6"/><path class="b" d="M62 88L78 70L52 72L62 42M62 88h8M62 44L82 46"/></svg><figcaption>Position basse</figcaption></figure></div>
+<ul><li>Pieds écartés largeur d'épaules, pointes légèrement ouvertes.</li><li>Pousse les hanches vers l'arrière, descends cuisses parallèles au sol.</li><li>Remonte en poussant dans les talons.</li></ul>
+<p class="tip">Dos droit, genoux dans l'axe des pieds.</p><a class="vid" href="https://www.youtube.com/results?search_query=squat%20technique%20ex%C3%A9cution" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Pompes <small>pectoraux · triceps · épaules</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="96" cy="38" r="6"/><path class="b" d="M14 78L86 42L88 78"/></g></svg><figcaption>Haut</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="94" cy="60" r="6"/><path class="b" d="M14 78L84 64L72 72L88 78"/></g></svg><figcaption>Bas</figcaption></figure></div>
+<ul><li>Mains un peu plus larges que les épaules, corps gainé en une ligne.</li><li>Descends la poitrine près du sol, coudes à ~45° du buste.</li><li>Pousse pour revenir bras tendus. Variante : genoux au sol.</li></ul>
+<p class="tip">Ne creuse pas le bas du dos.</p><a class="vid" href="https://www.youtube.com/results?search_query=pompes%20technique%20ex%C3%A9cution" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Extension lombaire <small>bas du dos · fessiers</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="94" cy="83" r="6"/><path class="b" d="M10 86H82M80 84L68 74L86 87"/></svg><figcaption>Départ : à plat ventre, mains au sol</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="90" cy="64" r="6"/><path class="b" d="M10 86H52L78 71M78 71L68 62L82 58"/><path class="ac" d="M104 78V60M100 64l4-4 4 4"/></svg><figcaption>Haut : buste levé, mains sur la tête, jambes au sol</figcaption></figure></div>
+<ul><li>Allonge-toi à plat ventre (face vers le sol), jambes tendues, pieds au sol.</li><li>Place les mains à plat sur le sol près des épaules, ou sur la tête pour plus de difficulté.</li><li>Lève uniquement le buste en décollant la poitrine, marque 1–2 s, puis redescends lentement. Le bassin et les jambes restent au sol.</li></ul>
+<p class="tip">Ne pousse pas avec les mains, regard vers le sol, sans cambrer à l'excès.</p><a class="vid" href="https://www.youtube.com/shorts/tdgl4vRZ2RA" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+</section>
+
+<!-- FICHE 2 -->
+<section class="fiche">
+<h2>② Hamstring bridge · Tirage horizontal · Mountain climbers</h2>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+
+<div class="ex"><h3>Hamstring bridge <small>ischio-jambiers · fessiers</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="98" cy="74" r="6"/><path class="b" d="M90 76H58L40 52L22 76"/></g></svg><figcaption>Départ</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="98" cy="74" r="6"/><path class="b" d="M90 76L58 54L34 52L22 76"/></g></svg><figcaption>Haut</figcaption></figure></div>
+<ul><li>Sur le dos, talons posés assez loin des fesses, genoux fléchis.</li><li>Appuie dans les talons et monte le bassin jusqu'à aligner épaules–hanches–genoux.</li><li>Serre les fessiers 1 s en haut, redescends en contrôle.</li></ul>
+<p class="tip">Sens le travail derrière les cuisses, pas dans le dos.</p><a class="vid" href="https://www.youtube.com/shorts/mHXcUcufj0k" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Tirage horizontal <small>dos · biceps</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="72" cy="30" r="6"/><path class="b" d="M52 88h8M52 88L56 76L50 62L66 36M66 36L70 66"/><path class="ac" d="M56 88L70 66"/></svg><figcaption>Bras tendus (bas)</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="72" cy="30" r="6"/><path class="b" d="M52 88h8M52 88L56 76L50 62L66 36M66 36L46 50L60 58"/><path class="ac" d="M56 88L60 58"/></svg><figcaption>Coudes en haut</figcaption></figure></div>
+<ul><li>Debout, pieds largeur de hanches sur l'élastique, genoux légèrement fléchis, buste penché en avant, dos plat.</li><li>Mains sur l'élastique, bras tendus vers le bas. Tire de bas en haut : coudes vers le haut et l'arrière, mains vers les côtes, en rapprochant les omoplates.</li><li>Redescends bras tendus, lentement.</li></ul>
+<p class="tip">Dos plat, pas d'élan avec le buste.</p><a class="vid" href="https://www.youtube.com/results?search_query=tirage%20buste%20pench%C3%A9%20elastique%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Mountain climbers <small>gainage · cardio</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="96" cy="36" r="6"/><path class="b" d="M16 76L86 40L88 76"/></g></svg><figcaption>Planche</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><g transform="translate(0,10)"><circle class="h" cx="96" cy="36" r="6"/><path class="b" d="M16 76L86 40L88 76"/><path class="ac" d="M52 57L74 64L62 74"/></g></svg><figcaption>Genou vers la poitrine</figcaption></figure></div>
+<ul><li>Position de planche, mains sous les épaules, corps aligné.</li><li>Ramène un genou vers la poitrine, puis alterne rapidement.</li><li>Garde le bassin stable, respire régulièrement.</li></ul>
+<p class="tip">Le bassin ne monte pas : gaine le ventre.</p><a class="vid" href="https://www.youtube.com/results?search_query=mountain%20climbers%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+</section>
+
+<!-- FICHE 3 -->
+<section class="fiche">
+<h2>③ Presse épaules · Biceps curl · Fentes</h2>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+
+<div class="ex"><h3>Presse épaules <small>épaules · triceps</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/><path class="b" d="M60 29L68 44L68 24M62 24h12"/><path class="ac" d="M64 88L68 24"/></svg><figcaption>Départ</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/><path class="b" d="M62 29L72 6M66 6h12"/><path class="ac" d="M64 88L72 6"/></svg><figcaption>Bras tendus</figcaption></figure></div>
+<ul><li>Debout, pieds largeur d'épaules sur l'élastique, mains à hauteur d'épaules, avant-bras verticaux.</li><li>Pousse vers le haut jusqu'à tendre les bras, sans verrouiller les coudes.</li><li>Redescends en contrôle au niveau des épaules.</li></ul>
+<p class="tip">Abdos serrés : ne cambre pas le dos.</p><a class="vid" href="https://www.youtube.com/results?search_query=d%C3%A9velopp%C3%A9%20%C3%A9paules%20%C3%A9lastique%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Biceps curl <small>biceps · avant-bras</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/><path class="b" d="M60 29L62 46L64 62M58 62h12"/><path class="ac" d="M64 88L64 62"/></svg><figcaption>Bras tendu</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/><path class="b" d="M60 29L62 46L74 34M68 34h12"/><path class="ac" d="M64 88L74 34"/></svg><figcaption>Haut</figcaption></figure></div>
+<ul><li>Debout, pieds largeur d'épaules sur l'élastique, coudes collés au corps, mains en prise (paumes vers l'avant).</li><li>Fléchis les coudes pour amener les mains aux épaules.</li><li>Redescends lentement, bras presque tendus.</li></ul>
+<p class="tip">Les coudes ne bougent pas, pas d'élan.</p><a class="vid" href="https://www.youtube.com/results?search_query=curl%20biceps%20%C3%A9lastique%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+
+<div class="ex"><h3>Fentes <small>cuisses · fessiers</small></h3>
+<div class="poses">
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><use href="#s"/></svg><figcaption>Départ</figcaption></figure>
+<figure><svg viewBox="0 0 120 96"><use href="#f"/><circle class="h" cx="56" cy="30" r="6"/><path class="b" d="M56 37V64L76 66V88h8M56 64L40 80L26 86"/></svg><figcaption>Position basse</figcaption></figure></div>
+<ul><li>Fais un grand pas en avant, buste droit.</li><li>Descends jusqu'à avoir les deux genoux à ~90°, genou arrière près du sol.</li><li>Pousse dans le pied avant pour revenir, puis change de jambe.</li></ul>
+<p class="tip">Genou avant au-dessus de la cheville, pas au-delà.</p><a class="vid" href="https://www.youtube.com/results?search_query=fentes%20avant%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
+</section>
+    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
+    </main>
+    <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><button class="btn" id="gset">Série faite ✓</button></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
+
+    <script>
+(function () {
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+  const opt = store.get('opt', { sound: true, vib: true });
+  let rest = store.get('rest', 180), work = true, running = false, target = 0, lastS = -1;
+  let acc = 0, t0 = 0, tick = null, wake = null, ctx = null, n = 0, cur = 0;
+
+  const elapsed = () => acc + (running ? Date.now() - t0 : 0);
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  const vib = p => { if (opt.vib && navigator.vibrate) navigator.vibrate(p); };
+
+  function audio() {
+    try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); if (ctx.state === 'suspended') ctx.resume(); } catch (e) {}
+  }
+  function beep(k, hz) {
+    if (!opt.sound) return;
+    try {
+      audio();
+      for (let i = 0; i < k; i++) {
+        const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime + i * 0.25;
+        o.frequency.value = hz || 880; g.gain.value = 0.2;
+        o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + 0.15);
+      }
+    } catch (e) {}
+  }
+  async function lock() {
+    try {
+      if ('wakeLock' in navigator && !wake) {
+        wake = await navigator.wakeLock.request('screen');
+        wake.addEventListener('release', () => { wake = null; });
+      }
+    } catch (e) {}
+  }
+  function unlock() { try { wake && wake.release(); } catch (e) {} wake = null; }
+
+  // Timer : chrono (effort libre), décompte (repos ou effort chronométré), barre de progression, bips à 3-2-1
+  function render() {
+    const e = elapsed(), total = work ? target : rest;
+    const s = total ? Math.max(0, Math.ceil((total * 1000 - e) / 1000)) : Math.floor(e / 1000);
+    $('timer').textContent = fmt(s);
+    $('bar').style.width = total ? Math.min(100, e / (total * 10)) + '%' : '0%';
+    document.title = (running ? fmt(s) + ' · ' : '') + "Fiches d'exercices";
+    if (total && running) {
+      if (s > 0 && s <= 3 && s !== lastS) { lastS = s; beep(1, 660); }
+      if (s <= 0) { if (work) endEffort(); else endRest(); }
+    }
+  }
+  function start() {
+    if (running) return;
+    running = true; t0 = Date.now(); lastS = -1; tick = setInterval(render, 250);
+    $('startPauseBtn').textContent = 'Pause'; lock(); audio();
+  }
+  function pause() {
+    if (!running) return;
+    acc = elapsed(); running = false; clearInterval(tick);
+    $('startPauseBtn').textContent = 'Reprendre'; unlock();
+  }
+  function setMode(w, auto, t) {
+    running = false; clearInterval(tick); acc = 0; work = w; target = w ? (t || 0) : 0; lastS = -1;
+    $('status').textContent = w ? 'Effort' : 'Repos';
+    $('status').className = 'status ' + (w ? 'status-work' : 'status-rest');
+    document.querySelector('header').classList.toggle('rest', !w);
+    $('switchBtn').textContent = w ? 'Repos' : 'Effort';
+    $('startPauseBtn').textContent = 'Démarrer';
+    render();
+    if (auto) start(); else unlock();
+  }
+  function endRest() { beep(3); vib([200, 100, 200, 100, 400]); setMode(true, false); $('status').textContent = 'Go !'; }
+  function endEffort() { beep(2); vib([300, 100, 300]); setMode(true, false); $('status').textContent = 'Fini !'; }
+
+  $('startPauseBtn').onclick = () => (running ? pause() : start());
+  $('switchBtn').onclick = () => setMode(!work, false);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') { if (running) lock(); render(); }
+  });
+
+  const presets = document.querySelectorAll('#presets button');
+  const marks = () => presets.forEach(b => b.classList.toggle('on', +b.dataset.s === rest));
+  presets.forEach(b => b.onclick = () => {
+    rest = +b.dataset.s; store.set('rest', rest); marks();
+    if (!work) setMode(false, running);
+  });
+
+  // Son et vibration : réglages
+  [['optSound', 'sound', '🔊 Son'], ['optVib', 'vib', '📳 Vibration']].forEach(([id, k, label]) => {
+    const b = $(id);
+    const up = () => { b.setAttribute('aria-pressed', opt[k]); b.textContent = label + ' : ' + (opt[k] ? 'oui' : 'non'); };
+    up();
+    b.onclick = () => { opt[k] = !opt[k]; store.set('opt', opt); up(); if (opt[k] && k === 'sound') beep(1); };
+  });
+
+  // Exercices : types, cibles, historique
+  const BAND = ['Tirage horizontal', 'Presse épaules', 'Biceps curl'], TIME = ['Mountain climbers'];
+  const TGT = {
+    'Mountain climbers': '30 s · rythme régulier · bassin stable',
+    'Extension lombaire': '8–12 reps · maintien 1–2 s en haut · descente 2 s'
+  };
+  const DEF = '8–12 reps · descente 2 s';
+  const data = store.get('sets', {}), sessions = store.get('sessions', []), reg = [];
+  const exs = [...document.querySelectorAll('.ex')];
+  const f = (x, t) => t === 'time' ? (x.r || '–') + ' s' : (x.kg ? x.kg + (t === 'band' ? '' : ' kg') + ' × ' : '') + (x.r || '–');
+
+  function hist(nm, t) {
+    const h = sessions.filter(s => s.e[nm]);
+    if (!h.length) return '';
+    const l = h[h.length - 1];
+    const tot = h.slice(-8).map(s => s.e[nm].reduce((a, x) => a + (+x.r || 0), 0));
+    const mx = Math.max(...tot), mn = Math.min(...tot);
+    const pts = tot.map((v, i) => (2 + i * 56 / (tot.length - 1 || 1)).toFixed(1) + ',' + (mx === mn ? 9 : 16 - (v - mn) / (mx - mn) * 12).toFixed(1)).join(' ');
+    const d = new Date(l.d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    return 'Dernière fois (' + d + ') : ' + l.e[nm].map(x => f(x, t)).join(' · ') +
+      (tot.length > 1 ? ' <svg class="spark" viewBox="0 0 60 18" role="img" aria-label="Progression du total de répétitions"><polyline points="' + pts + '"/></svg>' : '');
+  }
+  const count = () => { $('prog').textContent = document.querySelectorAll('.set.done').length + ' / ' + n + ' séries'; };
+
+  exs.forEach((ex, i) => {
+    const nm = ex.querySelector('h3').firstChild.textContent.trim();
+    const type = BAND.includes(nm) ? 'band' : TIME.includes(nm) ? 'time' : 'def';
+    const sets = parseInt((ex.closest('.fiche').querySelector('.chips span').textContent.match(/\d+/) || [3])[0], 10);
+    const box = document.createElement('div'), objs = [];
+    box.className = 'trk';
+    for (let j = 0; j < sets; j++) {
+      const k = i + '-' + j, num = j + 1; n++;
+      const s = data[k] = data[k] || {}; objs.push(s);
+      const row = document.createElement('div');
+      row.className = 'set' + (type === 'time' ? ' t' : '') + (s.d ? ' done' : '');
+      const first = type === 'band'
+        ? `<select aria-label="Niveau de l'élastique, série ${num}"><option value="">Élastique</option><option>Léger</option><option>Moyen</option><option>Fort</option><option>Très fort</option></select>`
+        : type === 'time' ? '' : `<input inputmode="decimal" placeholder="kg" aria-label="Charge en kg, série ${num}">`;
+      const second = type === 'time'
+        ? `<input inputmode="numeric" placeholder="s" aria-label="Durée en secondes, série ${num}"><button class="go" aria-label="Lancer le décompte, série ${num}">▶ Décompte</button>`
+        : `<input inputmode="numeric" placeholder="reps" aria-label="Répétitions, série ${num}">`;
+      row.innerHTML = `<b>Série ${num}</b>${first}${second}<button class="ck" aria-label="Valider la série ${num}">✓</button>`;
+      const ctl = row.querySelectorAll('select,input');
+      const kg = type === 'time' ? null : ctl[0], rp = ctl[ctl.length - 1];
+      if (kg) kg.value = s.kg || '';
+      rp.value = s.r || (type === 'time' ? '30' : '');
+      const save = () => { s.kg = kg ? kg.value : ''; s.r = rp.value; store.set('sets', data); };
+      [kg, rp].forEach(x => { if (x) x.oninput = x.onchange = save; });
+      const go = row.querySelector('.go');
+      if (go) go.onclick = () => setMode(true, true, +rp.value || 30);
+      row.querySelector('.ck').onclick = () => {
+        s.d = !s.d; row.classList.toggle('done', s.d); save(); count();
+        if (s.d) setMode(false, true);
+      };
+      box.appendChild(row);
+    }
+    const tg = document.createElement('p'); tg.className = 'tgt'; tg.textContent = 'Cible : ' + (TGT[nm] || DEF);
+    const hs = document.createElement('p'); hs.className = 'last'; hs.innerHTML = hist(nm, type);
+    const vid = ex.querySelector('.vid');
+    [tg, box, hs].forEach(x => ex.insertBefore(x, vid));
+    reg.push({ nm, type, objs, hs });
+  });
+
+  // Fin de séance : enregistrement dans l'historique
+  $('resetSession').onclick = () => {
+    if (!confirm("Terminer la séance ? Elle sera enregistrée dans l'historique et les séries seront décochées.")) return;
+    const e = {};
+    reg.forEach(r => {
+      const done = r.objs.filter(s => s.d);
+      if (done.length) e[r.nm] = done.map(s => ({ kg: s.kg, r: s.r }));
+    });
+    if (Object.keys(e).length) { sessions.push({ d: new Date().toLocaleDateString('sv-SE'), e }); store.set('sessions', sessions.slice(-30)); }
+    Object.values(data).forEach(s => { s.d = false; });
+    store.set('sets', data);
+    document.querySelectorAll('.set.done').forEach(r => r.classList.remove('done'));
+    reg.forEach(r => { r.hs.innerHTML = hist(r.nm, r.type); });
+    count(); setMode(true, false);
+  };
+
+  // Mode séance guidée : un exercice à la fois
+  function show(i) {
+    cur = Math.max(0, Math.min(exs.length - 1, i));
+    document.querySelectorAll('.cur').forEach(x => x.classList.remove('cur'));
+    exs[cur].classList.add('cur'); exs[cur].closest('.fiche').classList.add('cur');
+    $('gpos').textContent = 'Exercice ' + (cur + 1) + ' / ' + exs.length;
+    window.scrollTo(0, 0);
+  }
+  $('guideBtn').onclick = () => {
+    const g = document.body.classList.toggle('guided');
+    $('guideBtn').textContent = g ? 'Mode liste' : 'Mode guidé';
+    if (g) show(cur); else window.scrollTo(0, 0);
+  };
+  $('gprev').onclick = () => show(cur - 1);
+  $('gnext').onclick = () => show(cur + 1);
+  $('gset').onclick = () => {
+    const b = exs[cur].querySelector('.set:not(.done) .ck');
+    if (b) b.click();
+    if (!exs[cur].querySelector('.set:not(.done)') && cur < exs.length - 1) show(cur + 1);
+  };
+
+  // Historique des séances
+  const types = {}; reg.forEach(r => { types[r.nm] = r.type; });
+  const el = (tag, txt) => { const x = document.createElement(tag); x.textContent = txt; return x; };
+  $('histBtn').onclick = () => {
+    const body = $('histBody'); body.textContent = '';
+    if (!sessions.length) body.appendChild(el('p', "Aucune séance enregistrée. Appuie sur « Terminer la séance » pour en sauvegarder une."));
+    sessions.slice().reverse().forEach(s => {
+      body.appendChild(el('h4', new Date(s.d + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })));
+      Object.keys(s.e).forEach(nm => {
+        const p = document.createElement('p');
+        p.append(el('b', nm + ' : '), s.e[nm].map(x => f(x, types[nm])).join(' · '));
+        body.appendChild(p);
+      });
+    });
+    $('histDlg').showModal();
+  };
+  $('histClose').onclick = () => $('histDlg').close();
+  $('histReset').onclick = () => {
+    if (!confirm("Remettre à zéro la sauvegarde ? Toutes les séances enregistrées et les valeurs saisies seront effacées.")) return;
+    store.set('sessions', []); store.set('sets', {}); location.reload();
+  };
+
+  marks(); count(); setMode(true, false);
+})();
+</script>
+<script>if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js').catch(function () {});</script>
+</body>
+</html>
