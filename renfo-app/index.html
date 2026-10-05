@@ -158,7 +158,7 @@
     <main>
 
 <h1>Fiches d'exercices</h1>
-<p class="sub">Renforcement musculaire · 3 blocs de 3 exercices · valide chaque série avec ✓ : le repos démarre tout seul.</p>
+<p class="sub">Renforcement musculaire · 3 blocs de 3 exercices · valide chaque série avec ✓ : le repos démarre tout seul (en mode guidé, uniquement à la fin de chaque cycle : une série de chaque exercice du bloc).</p>
 <p id="appinfo" class="info" aria-live="polite"></p><div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="bkBtn">💾 Sauvegarde</button><button class="btn ghost" id="weekBtn"></button></div><details class="more"><summary>Réglages</summary><div class="opts"><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button><button class="btn ghost" id="optVoice"></button><button class="btn ghost" id="optHands"></button><button class="btn ghost" id="themeBtn"></button><button class="btn ghost" id="zoomM" aria-label="Texte plus petit">A−</button><button class="btn ghost" id="zoomP" aria-label="Texte plus grand">A+</button></div></details>
 <!-- FICHE 1 -->
 <section class="fiche">
@@ -399,7 +399,10 @@
       if (go) go.onclick = () => setMode(true, true, +rp.value || 30);
       row.querySelector('.ck').onclick = () => {
         s.d = !s.d; row.classList.toggle('done', s.d); save(); count();
-        if (s.d) setMode(false, true);
+        if (s.d) {
+          if (document.body.classList.contains('guided')) guidedNext(i);
+          else setMode(false, true);
+        }
       };
       box.appendChild(row);
     }
@@ -442,6 +445,27 @@
     gstate(); $('gReps').value = ''; $('gReps').placeholder = reg[cur].type === 'time' ? 'Secondes' : 'Reps';
     window.scrollTo(0, 0);
   }
+  // Mode guidé en cycles : série 1 de chaque exercice du bloc, puis pause ; série 2 de chacun, puis pause ; etc.
+  function guidedNext(i) {
+    const fiche = exs[i].closest('.fiche');
+    const grp = exs.map((x, k) => k).filter(k => exs[k].closest('.fiche') === fiche);
+    const dn = k => exs[k].querySelectorAll('.set.done').length;
+    const left = k => exs[k].querySelectorAll('.set:not(.done)').length;
+    const m = dn(i);
+    const behind = grp.filter(k => left(k) && dn(k) < m);
+    if (behind.length) {
+      // Cycle en cours : exercice suivant du bloc, sans pause
+      const pos = grp.indexOf(i);
+      show(grp.slice(pos + 1).concat(grp.slice(0, pos)).find(k => behind.includes(k)));
+      toast('Exercice suivant, sans pause'); handsStart();
+      return;
+    }
+    // Cycle terminé : pause, et on affiche déjà la suite (début du cycle suivant, ou bloc suivant)
+    setMode(false, true);
+    let next = grp.find(k => left(k));
+    if (next === undefined) next = exs.findIndex((x, k) => k > grp[grp.length - 1] && left(k));
+    if (next !== undefined && next !== -1) show(next);
+  }
   $('guideBtn').onclick = () => {
     const g = document.body.classList.toggle('guided');
     $('guideBtn').textContent = g ? 'Mode liste' : 'Mode guidé';
@@ -457,7 +481,6 @@
       row.querySelector('.ck').click();
     }
     $('gReps').value = '';
-    if (!exs[cur].querySelector('.set:not(.done)') && cur < exs.length - 1) show(cur + 1);
   };
 
   // Historique des séances
@@ -507,7 +530,7 @@
   };
 
   // Version et état de la connexion
-  const APP_VERSION = '1.5.1';
+  const APP_VERSION = '1.6.0';
   const net = () => {
     const on = navigator.onLine;
     $('netdot').classList.toggle('off', !on);
