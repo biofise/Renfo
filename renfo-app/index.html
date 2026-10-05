@@ -124,6 +124,10 @@
         .cal span{padding:6px 0;border-radius:8px;font-size:.85rem}
         .cal span.on{background:var(--ok);color:var(--card);font-weight:700}
         .cal span.today{outline:2px solid var(--acc)}
+        .set.add{grid-template-columns:auto 1fr 1fr}
+        .addex h4{margin:12px 0 4px}
+        #addDate{min-height:40px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+        #toast{top:auto;width:auto;height:auto;margin:0;border:0;overflow:visible}
     </style>
 </head>
 <body>
@@ -159,7 +163,7 @@
 <!-- FICHE 1 -->
 <section class="fiche">
 <h2>① Squat · Pompes · Extension lombaire</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Squat <small>cuisses · fessiers</small></h3>
 <div class="poses">
@@ -186,7 +190,7 @@
 <!-- FICHE 2 -->
 <section class="fiche">
 <h2>② Hamstring bridge · Tirage horizontal · Mountain climbers</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Hamstring bridge <small>ischio-jambiers · fessiers</small></h3>
 <div class="poses">
@@ -213,7 +217,7 @@
 <!-- FICHE 3 -->
 <section class="fiche">
 <h2>③ Presse épaules · Biceps curl · Fentes</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Presse épaules <small>épaules · triceps</small></h3>
 <div class="poses">
@@ -236,11 +240,12 @@
 <ul><li>Fais un grand pas en avant, buste droit.</li><li>Descends jusqu'à avoir les deux genoux à ~90°, genou arrière près du sol.</li><li>Pousse dans le pied avant pour revenir, puis change de jambe.</li></ul>
 <p class="tip">Genou avant au-dessus de la cheville, pas au-delà.</p><a class="vid" href="https://www.youtube.com/results?search_query=fentes%20avant%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
 </section>
-    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><h3>Calendrier</h3><div id="calBox"></div><div class="chw"><h3>Progression</h3><div class="sel"><select id="chEx" aria-label="Exercice"></select><select id="chMet" aria-label="Mesure"><option value="total">Total reps / secondes</option><option value="best">Meilleure série</option><option value="kg">Charge max (kg)</option></select></div><div id="chSvg" class="info"></div></div><h3>Détail des séances</h3><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
+    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><div class="opts" style="margin:0 0 6px"><button class="btn" id="addPast">+ Ajouter une séance passée</button></div><h3>Calendrier</h3><div id="calBox"></div><div class="chw"><h3>Progression</h3><div class="sel"><select id="chEx" aria-label="Exercice"></select><select id="chMet" aria-label="Mesure"><option value="total">Total reps / secondes</option><option value="best">Meilleure série</option><option value="kg">Charge max (kg)</option></select></div><div id="chSvg" class="info"></div></div><h3>Détail des séances</h3><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
     <dialog id="endDlg" aria-labelledby="endT"><h2 id="endT">Terminer la séance</h2><label for="rpe">Difficulté ressentie (1 = facile, 10 = très dur)</label><div class="sel"><select id="rpe"><option value="">Non précisée</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><label for="note">Note (douleur, fatigue, remarque)</label><textarea id="note" rows="3" maxlength="500"></textarea><div class="opts"><button class="btn" id="endSave">Enregistrer</button><button class="btn ghost" id="endCancel">Annuler</button></div></dialog>
     <dialog id="bkDlg" aria-labelledby="bkT"><h2 id="bkT">Sauvegarde</h2><p id="bkInfo" class="info"></p><div class="opts"><button class="btn" id="bkFile">Télécharger un fichier</button><button class="btn ghost" id="bkCopy">Copier le texte</button></div><h3>Restaurer</h3><input type="file" id="bkLoad" accept=".json,application/json" aria-label="Choisir un fichier de sauvegarde"><label for="bkText">… ou colle ici le texte de la sauvegarde :</label><textarea id="bkText" rows="3"></textarea><div class="opts"><button class="btn ghost" id="bkPaste">Restaurer depuis le texte</button><button class="btn ghost" id="bkClose">Fermer</button></div></dialog>
+    <dialog id="addDlg" aria-labelledby="addT"><h2 id="addT">Ajouter une séance passée</h2><label for="addDate">Date de la séance</label><input type="date" id="addDate"><div id="addBody"></div><label for="addRpe">Difficulté ressentie (facultatif)</label><div class="sel"><select id="addRpe"><option value="">Non précisée</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><label for="addNote">Note (facultatif)</label><textarea id="addNote" rows="2" maxlength="500"></textarea><div class="opts"><button class="btn" id="addSave">Ajouter la séance</button><button class="btn ghost" id="addCancel">Annuler</button></div></dialog>
     </main>
-    <div id="toast" role="status" hidden></div><div id="upd" hidden><span>Mise à jour disponible</span><button class="btn" id="updBtn">Recharger</button></div>
+    <div id="toast" role="status" popover="manual" hidden></div><div id="upd" hidden><span>Mise à jour disponible</span><button class="btn" id="updBtn">Recharger</button></div>
     <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><div class="grow"><input id="gReps" inputmode="numeric" placeholder="Reps" aria-label="Nombre de répétitions de la série"><button class="btn ghost" id="gMic" aria-label="Dicter le nombre de répétitions">🎤</button><button class="btn" id="gset">Série faite ✓</button></div></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
 
     <script>
@@ -502,7 +507,7 @@
   };
 
   // Version et état de la connexion
-  const APP_VERSION = '1.4.0';
+  const APP_VERSION = '1.5.0';
   const net = () => {
     const on = navigator.onLine;
     $('netdot').classList.toggle('off', !on);
@@ -551,7 +556,13 @@
 
   // Records, régularité hebdomadaire, message temporaire
   let tt = null;
-  const toast = m => { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 7000); };
+  const toast = m => {
+    const t = $('toast'); t.textContent = m; t.hidden = false;
+    try { t.hidePopover(); } catch (e) {}
+    try { t.showPopover(); } catch (e) {}
+    clearTimeout(tt);
+    tt = setTimeout(() => { try { t.hidePopover(); } catch (e) {} t.hidden = true; }, 7000);
+  };
   const sum = l => l.reduce((a, x) => a + (+x.r || 0), 0);
   const mxkg = l => Math.max(0, ...l.map(x => parseFloat(String(x.kg).replace(',', '.')) || 0));
   const records = e => Object.keys(e).filter(nm => {
@@ -696,6 +707,47 @@
   }
   $('bkLoad').onchange = async e => { const f = e.target.files[0]; if (f) restore(await f.text()); e.target.value = ''; };
   $('bkPaste').onclick = () => restore($('bkText').value);
+
+  // Ajout d'une séance passée (oubli de saisie)
+  const addBody = $('addBody');
+  function buildAdd() {
+    $('addDate').value = dstr(new Date()); $('addDate').max = dstr(new Date());
+    $('addRpe').value = ''; $('addNote').value = ''; addBody.textContent = '';
+    reg.forEach(r => {
+      const box = document.createElement('div');
+      box.className = 'addex'; box.appendChild(el('h4', r.nm));
+      r.objs.forEach((_, j) => {
+        const row = document.createElement('div');
+        row.className = 'set add';
+        const t = r.type;
+        row.innerHTML = `<b>Série ${j + 1}</b>` +
+          (t === 'band' ? `<select aria-label="Niveau de l'élastique, série ${j + 1}"><option value="">Élastique</option><option>Léger</option><option>Moyen</option><option>Fort</option><option>Très fort</option></select>`
+            : t === 'time' ? '' : `<input inputmode="decimal" placeholder="kg" aria-label="Charge en kg, série ${j + 1}">`) +
+          `<input inputmode="numeric" placeholder="${t === 'time' ? 's' : 'reps'}" aria-label="${t === 'time' ? 'Durée en secondes' : 'Répétitions'}, série ${j + 1}">`;
+        box.appendChild(row);
+      });
+      addBody.appendChild(box);
+    });
+  }
+  $('addPast').onclick = () => { buildAdd(); $('addDlg').showModal(); };
+  $('addCancel').onclick = () => $('addDlg').close();
+  $('addSave').onclick = () => {
+    const d = $('addDate').value;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d) || d > dstr(new Date())) { toast('Choisis une date valide, pas dans le futur.'); return; }
+    const e = {};
+    reg.forEach((r, i) => {
+      const sets = [...addBody.children[i].querySelectorAll('.set')].map(row => {
+        const c = row.querySelectorAll('select,input');
+        return { kg: r.type === 'time' ? '' : c[0].value.trim(), r: c[c.length - 1].value.trim() };
+      }).filter(x => x.r !== '');
+      if (sets.length) e[r.nm] = sets;
+    });
+    if (!Object.keys(e).length) { toast('Saisis au moins une série avec ses répétitions.'); return; }
+    sessions.push({ d, e, rpe: $('addRpe').value, note: $('addNote').value.trim(), rec: [] });
+    sessions.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0));
+    persist(); renderHist(); renderCal(); drawChart();
+    $('addDlg').close(); toast('Séance du ' + d + ' ajoutée');
+  };
 
   marks(); count(); setMode(true, false);
 })();
