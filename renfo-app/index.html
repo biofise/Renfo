@@ -10,7 +10,7 @@
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="icon" href="icon-192.png">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <title>Ma Séance</title>
+    <title>Fiches d'exercices avec Timer</title>
     <style>
 	:root{--bg:#f6f5f1;--card:#fff;--ink:#1d2a33;--mute:#5d6b75;--line:#d9dde0;--acc:#e0552b;--chip:#e9efe9;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 	@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14191d;--card:#1d2429;--ink:#e8edf0;--mute:#9aa8b1;--line:#34404a;--acc:#ff7a4d;--chip:#26332b}}
@@ -93,6 +93,27 @@
         dialog .opts{margin:14px 0 0}
         #histReset{color:var(--ko);border-color:var(--ko)}
         @media print{dialog{display:none}}
+        .sline{display:flex;align-items:center}
+        .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--ok)}
+        .dot.off{background:var(--ko)}
+        .info{color:var(--mute);font-size:.8rem;margin:0 0 10px}
+        dialog h3{margin:14px 0 6px;font-size:1rem}
+        dialog select{min-height:40px;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit;max-width:100%}
+        .sel{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+        .chart{width:100%;height:auto}
+        .chart text{fill:var(--mute);font-size:9px}
+        .chart .gl{stroke:var(--line);stroke-width:1}
+        .chart .ln{fill:none;stroke:var(--acc);stroke-width:2}
+        .chart .pt{fill:var(--acc)}
+        details.more{margin:0 0 18px}
+        details.more summary{cursor:pointer;color:var(--mute);padding:6px 0}
+        dialog label{display:block;margin:10px 0 4px;font-size:.9rem}
+        dialog textarea{width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+        .hi{min-height:32px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;text-align:center}
+        .btn.sm{min-height:32px;padding:2px 10px;font-size:.85rem}
+        .sug{color:var(--ok);font-weight:600}
+        #toast,#upd{position:fixed;left:12px;right:12px;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:1100;display:flex;gap:10px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--card);padding:10px 14px;border-radius:12px}
+        #toast[hidden],#upd[hidden]{display:none}
     </style>
 </head>
 <body>
@@ -101,7 +122,7 @@
     <header>
         <div class="tbar">
             <div>
-                <span id="status" class="status status-work">Effort</span>
+                <div class="sline"><span id="netdot" class="dot" role="img" aria-label="En ligne"></span><span id="status" class="status status-work">Effort</span></div>
                 <div id="timer" class="tdisp" role="timer">00:00</div>
             </div>
             <div class="tbtns">
@@ -124,11 +145,11 @@
 
 <h1>Fiches d'exercices</h1>
 <p class="sub">Renforcement musculaire · 3 blocs de 3 exercices · valide chaque série avec ✓ : le repos démarre tout seul.</p>
-<div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button></div>
+<p id="appinfo" class="info" aria-live="polite"></p><div class="opts"><button class="btn" id="guideBtn">Mode guidé</button><button class="btn ghost" id="resetSession">Terminer la séance</button><button class="btn ghost" id="histBtn">Historique</button><button class="btn ghost" id="weekBtn"></button></div><details class="more"><summary>Réglages</summary><div class="opts"><button class="btn ghost" id="optSound"></button><button class="btn ghost" id="optVib"></button><button class="btn ghost" id="optVoice"></button><button class="btn ghost" id="themeBtn"></button><button class="btn ghost" id="zoomM" aria-label="Texte plus petit">A−</button><button class="btn ghost" id="zoomP" aria-label="Texte plus grand">A+</button></div></details>
 <!-- FICHE 1 -->
 <section class="fiche">
 <h2>① Squat · Pompes · Extension lombaire</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Squat <small>cuisses · fessiers</small></h3>
 <div class="poses">
@@ -155,7 +176,7 @@
 <!-- FICHE 2 -->
 <section class="fiche">
 <h2>② Hamstring bridge · Tirage horizontal · Mountain climbers</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Hamstring bridge <small>ischio-jambiers · fessiers</small></h3>
 <div class="poses">
@@ -182,7 +203,7 @@
 <!-- FICHE 3 -->
 <section class="fiche">
 <h2>③ Presse épaules · Biceps curl · Fentes</h2>
-<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 2 min</span></div>
+<div class="chips"><span>3 séries</span><span>RiR 3 : stop à 3 reps de l'échec</span><span>Récup : 3 min</span></div>
 
 <div class="ex"><h3>Presse épaules <small>épaules · triceps</small></h3>
 <div class="poses">
@@ -205,8 +226,10 @@
 <ul><li>Fais un grand pas en avant, buste droit.</li><li>Descends jusqu'à avoir les deux genoux à ~90°, genou arrière près du sol.</li><li>Pousse dans le pied avant pour revenir, puis change de jambe.</li></ul>
 <p class="tip">Genou avant au-dessus de la cheville, pas au-delà.</p><a class="vid" href="https://www.youtube.com/results?search_query=fentes%20avant%20technique" target="_blank" rel="noopener">▶ Voir des vidéos de l'exercice</a></div>
 </section>
-    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
+    <dialog id="histDlg" aria-labelledby="histTitle"><h2 id="histTitle">Historique des séances</h2><div class="chw"><h3>Progression</h3><div class="sel"><select id="chEx" aria-label="Exercice"></select><select id="chMet" aria-label="Mesure"><option value="total">Total reps / secondes</option><option value="best">Meilleure série</option><option value="kg">Charge max (kg)</option></select></div><div id="chSvg" class="info"></div></div><h3>Détail des séances</h3><div id="histBody" class="hs"></div><div class="opts"><button class="btn ghost" id="histClose">Fermer</button><button class="btn ghost" id="histReset">Remettre à zéro la sauvegarde</button></div></dialog>
+    <dialog id="endDlg" aria-labelledby="endT"><h2 id="endT">Terminer la séance</h2><label for="rpe">Difficulté ressentie (1 = facile, 10 = très dur)</label><div class="sel"><select id="rpe"><option value="">Non précisée</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div><label for="note">Note (douleur, fatigue, remarque)</label><textarea id="note" rows="3" maxlength="500"></textarea><div class="opts"><button class="btn" id="endSave">Enregistrer</button><button class="btn ghost" id="endCancel">Annuler</button></div></dialog>
     </main>
+    <div id="toast" role="status" hidden></div><div id="upd" hidden><span>Mise à jour disponible</span><button class="btn" id="updBtn">Recharger</button></div>
     <nav id="gnav" aria-label="Séance guidée"><button class="btn ghost" id="gprev" aria-label="Exercice précédent">◀</button><div><span id="gpos">Exercice 1 / 9</span><button class="btn" id="gset">Série faite ✓</button></div><button class="btn ghost" id="gnext" aria-label="Exercice suivant">▶</button></nav>
 
     <script>
@@ -216,7 +239,8 @@
     get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
   };
-  const opt = store.get('opt', { sound: true, vib: true });
+  const opt = Object.assign({ voice: false }, store.get('opt', { sound: true, vib: true }));
+  const say = t => { if (!opt.voice || !window.speechSynthesis) return; try { const u = new SpeechSynthesisUtterance(t); u.lang = 'fr-FR'; speechSynthesis.speak(u); } catch (e) {} };
   let rest = store.get('rest', 180), work = true, running = false, target = 0, lastS = -1;
   let acc = 0, t0 = 0, tick = null, wake = null, ctx = null, n = 0, cur = 0;
 
@@ -280,7 +304,7 @@
     render();
     if (auto) start(); else unlock();
   }
-  function endRest() { beep(3); vib([200, 100, 200, 100, 400]); setMode(true, false); $('status').textContent = 'Go !'; }
+  function endRest() { say('Série suivante'); beep(3); vib([200, 100, 200, 100, 400]); setMode(true, false); $('status').textContent = 'Go !'; }
   function endEffort() { beep(2); vib([300, 100, 300]); setMode(true, false); $('status').textContent = 'Fini !'; }
 
   $('startPauseBtn').onclick = () => (running ? pause() : start());
@@ -297,7 +321,7 @@
   });
 
   // Son et vibration : réglages
-  [['optSound', 'sound', '🔊 Son'], ['optVib', 'vib', '📳 Vibration']].forEach(([id, k, label]) => {
+  [['optSound', 'sound', '🔊 Son'], ['optVib', 'vib', '📳 Vibration'], ['optVoice', 'voice', '🗣️ Voix']].forEach(([id, k, label]) => {
     const b = $(id);
     const up = () => { b.setAttribute('aria-pressed', opt[k]); b.textContent = label + ' : ' + (opt[k] ? 'oui' : 'non'); };
     up();
@@ -319,12 +343,15 @@
     const h = sessions.filter(s => s.e[nm]);
     if (!h.length) return '';
     const l = h[h.length - 1];
+    const rp = l.e[nm].map(x => +x.r || 0);
+    const sug = rp.length && rp.every(r => r >= (t === 'time' ? 45 : 12)) ? '<br><span class="sug">💡 ' +
+      (t === 'time' ? 'Tu tiens 45 s partout : passe à 60 s.' : t === 'band' ? 'Tu fais 12 reps partout : passe à un élastique plus fort ou descends en 3 s.' : 'Tu fais 12 reps partout : ajoute de la charge ou choisis une variante plus difficile.') + '</span>' : '';
     const tot = h.slice(-8).map(s => s.e[nm].reduce((a, x) => a + (+x.r || 0), 0));
     const mx = Math.max(...tot), mn = Math.min(...tot);
     const pts = tot.map((v, i) => (2 + i * 56 / (tot.length - 1 || 1)).toFixed(1) + ',' + (mx === mn ? 9 : 16 - (v - mn) / (mx - mn) * 12).toFixed(1)).join(' ');
     const d = new Date(l.d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
     return 'Dernière fois (' + d + ') : ' + l.e[nm].map(x => f(x, t)).join(' · ') +
-      (tot.length > 1 ? ' <svg class="spark" viewBox="0 0 60 18" role="img" aria-label="Progression du total de répétitions"><polyline points="' + pts + '"/></svg>' : '');
+      (tot.length > 1 ? ' <svg class="spark" viewBox="0 0 60 18" role="img" aria-label="Progression du total de répétitions"><polyline points="' + pts + '"/></svg>' : '') + sug;
   }
   const count = () => { $('prog').textContent = document.querySelectorAll('.set.done').length + ' / ' + n + ' séries'; };
 
@@ -368,14 +395,22 @@
   });
 
   // Fin de séance : enregistrement dans l'historique
-  $('resetSession').onclick = () => {
-    if (!confirm("Terminer la séance ? Elle sera enregistrée dans l'historique et les séries seront décochées.")) return;
+  $('resetSession').onclick = () => $('endDlg').showModal();
+  $('endCancel').onclick = () => $('endDlg').close();
+  $('endSave').onclick = () => {
+    $('endDlg').close();
     const e = {};
     reg.forEach(r => {
       const done = r.objs.filter(s => s.d);
       if (done.length) e[r.nm] = done.map(s => ({ kg: s.kg, r: s.r }));
     });
-    if (Object.keys(e).length) { sessions.push({ d: new Date().toLocaleDateString('sv-SE'), e }); store.set('sessions', sessions.slice(-30)); }
+    if (Object.keys(e).length) {
+      const rec = records(e);
+      sessions.push({ d: new Date().toLocaleDateString('sv-SE'), e, rpe: $('rpe').value, note: $('note').value.trim(), rec });
+      store.set('sessions', sessions.slice(-30));
+      $('rpe').value = ''; $('note').value = ''; weekInfo();
+      toast(rec.length ? '🏆 Record : ' + rec.join(', ') : 'Séance enregistrée');
+    }
     Object.values(data).forEach(s => { s.d = false; });
     store.set('sets', data);
     document.querySelectorAll('.set.done').forEach(r => r.classList.remove('done'));
@@ -407,28 +442,142 @@
   // Historique des séances
   const types = {}; reg.forEach(r => { types[r.nm] = r.type; });
   const el = (tag, txt) => { const x = document.createElement(tag); x.textContent = txt; return x; };
-  $('histBtn').onclick = () => {
+  const persist = () => { store.set('sessions', sessions.slice(-30)); reg.forEach(r => { r.hs.innerHTML = hist(r.nm, r.type); }); weekInfo(); };
+  const inp = (v, ph, w, fn) => {
+    const i = document.createElement('input');
+    i.value = v || ''; i.placeholder = ph; i.className = 'hi'; i.style.width = w; i.setAttribute('aria-label', ph);
+    i.oninput = () => { fn(i.value); store.set('sessions', sessions.slice(-30)); };
+    return i;
+  };
+  const btn = (txt, label, fn) => { const b = el('button', txt); b.className = 'btn ghost sm'; b.setAttribute('aria-label', label); b.onclick = fn; return b; };
+  function renderHist() {
     const body = $('histBody'); body.textContent = '';
     if (!sessions.length) body.appendChild(el('p', "Aucune séance enregistrée. Appuie sur « Terminer la séance » pour en sauvegarder une."));
-    sessions.slice().reverse().forEach(s => {
-      body.appendChild(el('h4', new Date(s.d + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })));
+    sessions.map((s, i) => [s, i]).reverse().forEach(([s, i]) => {
+      const dt = new Date(s.d + 'T12:00:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      const h = el('h4', dt + (s.rpe ? ' · difficulté ' + s.rpe + '/10' : ''));
+      h.append(' ', btn('🗑', 'Supprimer la séance du ' + dt, () => {
+        if (confirm('Supprimer cette séance ?')) { sessions.splice(i, 1); persist(); renderHist(); drawChart(); }
+      }));
+      body.appendChild(h);
+      if (s.note) body.appendChild(el('p', '📝 ' + s.note));
       Object.keys(s.e).forEach(nm => {
-        const p = document.createElement('p');
-        p.append(el('b', nm + ' : '), s.e[nm].map(x => f(x, types[nm])).join(' · '));
+        const p = document.createElement('p'), t = types[nm];
+        p.append(el('b', ((s.rec || []).includes(nm) ? '🏆 ' : '') + nm + ' : '));
+        s.e[nm].forEach((x, j) => {
+          if (t !== 'time') p.append(inp(x.kg, t === 'band' ? 'élastique' : 'kg', t === 'band' ? '5.5em' : '3.5em', v => { x.kg = v; }), ' × ');
+          p.append(inp(x.r, t === 'time' ? 's' : 'reps', '3em', v => { x.r = v; }), t === 'time' ? ' s ' : ' ');
+          if (j < s.e[nm].length - 1) p.append('· ');
+        });
+        p.append(btn('✕', 'Retirer ' + nm + ' de cette séance', () => {
+          delete s.e[nm]; if (!Object.keys(s.e).length) sessions.splice(i, 1);
+          persist(); renderHist(); drawChart();
+        }));
         body.appendChild(p);
       });
     });
-    $('histDlg').showModal();
-  };
+  }
+  $('histBtn').onclick = () => { renderHist(); drawChart(); $('histDlg').showModal(); };
   $('histClose').onclick = () => $('histDlg').close();
+  $('histDlg').addEventListener('close', persist);
   $('histReset').onclick = () => {
     if (!confirm("Remettre à zéro la sauvegarde ? Toutes les séances enregistrées et les valeurs saisies seront effacées.")) return;
     store.set('sessions', []); store.set('sets', {}); location.reload();
   };
 
+  // Version et état de la connexion
+  const APP_VERSION = '1.2.0';
+  const net = () => {
+    const on = navigator.onLine;
+    $('netdot').classList.toggle('off', !on);
+    $('netdot').setAttribute('aria-label', on ? 'En ligne' : 'Hors ligne');
+    $('appinfo').textContent = (on ? 'En ligne' : 'Hors ligne') + ' · version ' + APP_VERSION;
+  };
+  addEventListener('online', net); addEventListener('offline', net); net();
+
+  // Graphique de progression
+  const chEx = $('chEx'), chMet = $('chMet');
+  chEx.add(new Option('Toutes (séries validées)', '*'));
+  reg.forEach(r => chEx.add(new Option(r.nm, r.nm)));
+  function series() {
+    const nm = chEx.value, m = chMet.value, pts = [];
+    sessions.forEach(s => {
+      let v = null;
+      if (nm === '*') v = Object.values(s.e).reduce((a, l) => a + l.length, 0);
+      else if (s.e[nm]) {
+        const reps = s.e[nm].map(x => +x.r || 0);
+        const kgs = s.e[nm].map(x => parseFloat(String(x.kg).replace(',', '.'))).filter(x => !isNaN(x));
+        v = m === 'best' ? Math.max(...reps) : m === 'kg' ? (kgs.length ? Math.max(...kgs) : null) : reps.reduce((a, b) => a + b, 0);
+      }
+      if (v !== null) pts.push({ d: s.d, v });
+    });
+    return pts.slice(-12);
+  }
+  function drawChart() {
+    chMet.disabled = chEx.value === '*';
+    const pts = series(), box = $('chSvg');
+    if (pts.length < 2) { box.textContent = pts.length ? 'Il faut au moins 2 séances pour tracer une courbe.' : 'Pas de données pour ce choix.'; return; }
+    const W = 320, H = 170, L = 30, R = 10, T = 14, B = 28, mx = Math.max(...pts.map(p => p.v)) || 1;
+    const xs = pts.map((p, i) => L + (W - L - R) * i / (pts.length - 1));
+    const ys = pts.map(p => T + (H - T - B) * (1 - p.v / mx));
+    const lab = d => new Date(d + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'numeric' });
+    const step = Math.ceil(pts.length / 6);
+    box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" class="chart" role="img" aria-label="Graphique de progression">` +
+      `<line x1="${L}" y1="${T}" x2="${W - R}" y2="${T}" class="gl"/><line x1="${L}" y1="${H - B}" x2="${W - R}" y2="${H - B}" class="gl"/>` +
+      `<text x="${L - 4}" y="${T + 3}" text-anchor="end">${mx}</text><text x="${L - 4}" y="${H - B + 3}" text-anchor="end">0</text>` +
+      `<polyline class="ln" points="${xs.map((x, i) => x.toFixed(1) + ',' + ys[i].toFixed(1)).join(' ')}"/>` +
+      pts.map((p, i) => `<circle class="pt" cx="${xs[i].toFixed(1)}" cy="${ys[i].toFixed(1)}" r="3.5"/>` +
+        (pts.length <= 8 || i === pts.length - 1 ? `<text x="${xs[i].toFixed(1)}" y="${(ys[i] - 7).toFixed(1)}" text-anchor="middle">${p.v}</text>` : '') +
+        ((pts.length - 1 - i) % step === 0 ? `<text x="${xs[i].toFixed(1)}" y="${H - 10}" text-anchor="middle">${lab(p.d)}</text>` : '')
+      ).join('') + '</svg>';
+  }
+  chEx.onchange = chMet.onchange = drawChart;
+
+  // Records, régularité hebdomadaire, message temporaire
+  let tt = null;
+  const toast = m => { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 7000); };
+  const sum = l => l.reduce((a, x) => a + (+x.r || 0), 0);
+  const mxkg = l => Math.max(0, ...l.map(x => parseFloat(String(x.kg).replace(',', '.')) || 0));
+  const records = e => Object.keys(e).filter(nm => {
+    const prev = sessions.filter(s => s.e[nm]);
+    return prev.length && (sum(e[nm]) > Math.max(...prev.map(s => sum(s.e[nm]))) || mxkg(e[nm]) > Math.max(...prev.map(s => mxkg(s.e[nm]))));
+  });
+  let goal = store.get('goal', 3);
+  const weekInfo = () => {
+    const d = new Date(); d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    const mon = d.toLocaleDateString('sv-SE'), c = sessions.filter(s => s.d >= mon).length;
+    $('weekBtn').textContent = '📅 Semaine : ' + c + ' / ' + goal + (c >= goal ? ' ✅' : '');
+  };
+  $('weekBtn').onclick = () => {
+    const v = parseInt(prompt('Objectif : combien de séances par semaine ? (1 à 7)', goal), 10);
+    if (v >= 1 && v <= 7) { goal = v; store.set('goal', v); weekInfo(); }
+  };
+  weekInfo();
+
+  // Confort : thème, taille du texte
+  const root = document.documentElement, mainEl = document.querySelector('main');
+  const themes = [['', 'Auto'], ['light', 'Clair'], ['dark', 'Sombre']], ZOOMS = [0.9, 1, 1.15, 1.3, 1.5];
+  let th = store.get('theme', 0), zi = store.get('zoomI', 1);
+  const look = () => {
+    if (themes[th][0]) root.dataset.theme = themes[th][0]; else delete root.dataset.theme;
+    $('themeBtn').textContent = '🌓 Thème : ' + themes[th][1];
+    mainEl.style.zoom = ZOOMS[zi];
+  };
+  $('themeBtn').onclick = () => { th = (th + 1) % 3; store.set('theme', th); look(); };
+  $('zoomM').onclick = () => { zi = Math.max(0, zi - 1); store.set('zoomI', zi); look(); };
+  $('zoomP').onclick = () => { zi = Math.min(ZOOMS.length - 1, zi + 1); store.set('zoomI', zi); look(); };
+  look();
+
   marks(); count(); setMode(true, false);
 })();
 </script>
-<script>if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) navigator.serviceWorker.register('sw.js').catch(function () {});</script>
+<script>
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  var had = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('sw.js').then(function (r) { r.update(); }).catch(function () {});
+  navigator.serviceWorker.addEventListener('controllerchange', function () { if (had) document.getElementById('upd').hidden = false; });
+  document.getElementById('updBtn').onclick = function () { location.reload(); };
+}
+</script>
 </body>
 </html>
